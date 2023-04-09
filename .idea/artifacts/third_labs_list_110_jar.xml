@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="third_labs_list_110:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/third_labs_list_110_jar</output-path>
+    <root id="archive" name="third_labs_list_110.jar">
+      <element id="module-output" name="third_labs_list_110" />
+    </root>
+  </artifact>
+</component>
