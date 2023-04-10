@@ -4,6 +4,17 @@ public class LinkedList {
 
     private Node head; // Ссылка на первый узел списка
 
+    private static class Node {
+        Object data; // Значение узла
+        Node next; // Ссылка на следующий узел в списке
+
+        // Конструктор для создания нового узла с заданным значением
+        Node(Object data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
+
 
     //добавление значения в начало списка
     public void addToBeginning(Object data) {
@@ -129,6 +140,28 @@ public class LinkedList {
         return false; // Если значение не найдено в списке, возвращаем false
     }
 
+    //удаление заданного значения из списка; если значения в списке нет, то ничего происходить не должно
+    public void remove(Object data) {
+        if (head == null) {
+            return;
+        }
+
+        if (head.data.equals(data)) {
+            head = head.next;
+            return;
+        }
+
+        Node current = head;
+        while (current.next != null) {
+            if (current.next.data.equals(data)) {
+                current.next = current.next.next;
+                return;
+            }
+            current = current.next;
+        }
+    }
+
+    //построение нового списка в обратном порядке
     public LinkedList reverseList() {
         // Если список пуст, выбрасываем исключение с соответствующим сообщением
         if (isEmpty()) {
@@ -144,6 +177,7 @@ public class LinkedList {
         }
         return reversedList;
     }
+
 
     public void printAll() {
         Node current = head;
