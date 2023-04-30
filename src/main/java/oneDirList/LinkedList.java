@@ -1,26 +1,120 @@
 package oneDirList;
 
-public class LinkedList {
+import java.util.Iterator;
+
+public class LinkedList <T> implements Iterable<T>{
 
     private Node head; // Ссылка на первый узел списка
 
-    private static class Node {
-        Object data; // Значение узла
+    private class Node {
+        T data; // Значение узла
         Node next; // Ссылка на следующий узел в списке
 
         // Конструктор для создания нового узла с заданным значением
-        Node(Object data) {
+        Node(T data) {
             this.data = data;
             this.next = null;
         }
     }
 
+    // метод iterator() из интерфейса Iterable,  для того, чтобы класс мог реализовать интерфейс
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private Node currentNode = head;
+
+            // Метод hasNext() возвращает true, если в списке остались элементы для перебора
+            @Override
+            public boolean hasNext() {
+                return currentNode != null;
+            }
+
+            // Метод next() возвращает следующий элемент в списке и перемещает указатель currentNode на следующий узел
+            @Override
+            public T next() {
+                T value = currentNode.data;
+                currentNode = currentNode.next;
+                return value;
+            }
+        };
+    }
+
+    //метод переопределяющий основной метод Iterator<T> iterator(), использующий условия вложенного класса - HeadToValueIterator
+    public Iterable<T> headToValue(T value) {
+        return new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return new HeadToValueIterator(value);
+            }
+        };
+    }
+
+    //класс, описывающий итератор, который перебирает от головного узла до узла с заданным значением
+    private class HeadToValueIterator implements Iterator<T> {
+        private Node currentNode = head;
+        private final T value;
+
+        HeadToValueIterator(T value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentNode != null && !currentNode.data.equals(value);
+        }
+
+        @Override
+        public T next() {
+            T data = currentNode.data;
+            currentNode = currentNode.next;
+            return data;
+        }
+    }
+
+    //метод переопределяющий основной метод Iterator<T> iterator(), использующий условия вложенного класса - ValueToTailIterator
+    public Iterable<T> valueToTail(T value) {
+        return new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return new ValueToTailIterator(value);
+            }
+        };
+    }
+
+    //класс, описывающий итератор, который перебирает узлы от от узла с заданным значением до конца списка
+    private class ValueToTailIterator implements Iterator<T> {
+        private Node currentNode;
+
+        ValueToTailIterator(T value) {
+            currentNode = head;
+            while (currentNode != null && !currentNode.data.equals(value)) {
+                currentNode = currentNode.next;
+            }
+            if (currentNode != null) {
+                currentNode = currentNode.next;
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentNode != null;
+        }
+
+        @Override
+        public T next() {
+            T data = currentNode.data;
+            currentNode = currentNode.next;
+            return data;
+        }
+    }
+
+
 
     //добавление значения в начало списка
-    public void addToBeginning(Object data) {
+    public void addToBeginning(T data) {
         Node newNode = new Node(data);
 
-        if (isEmpty()) {
+        if (head == null) {
             // Если список пуст (head равен null), то newNode становится и головой, и хвостом списка.
             head = newNode;
         } else {
@@ -33,7 +127,7 @@ public class LinkedList {
     //извлечение значения из начала списка без его удаления из списка
     public Object pickFirst(){
         // Если список пуст, выбрасываем исключение с соответствующим сообщением
-        if (isEmpty()) {
+        if (head == null) {
             throw new RuntimeException("List is empty");
         }
         // Возвращаем значение первого элемента списка без удаления
@@ -43,7 +137,7 @@ public class LinkedList {
     //извлечение значения из начала списка c его удалением из списка
     public Object pickDeleteFirst() {
         // Если список пуст, выбрасываем исключение с соответствующим сообщением
-        if (isEmpty()) {
+        if (head == null) {
             throw new RuntimeException("List is empty");
         }
 
@@ -59,10 +153,10 @@ public class LinkedList {
 
 
     //добавление значения в конец списка
-    public void addToEnd(Object data) {
+    public void addToEnd(T data) {
         Node newNode = new Node(data);
 
-        if (isEmpty()) {
+        if (head == null) {
             // Если список пуст (head равен null), то newNode становится и головой, и хвостом списка.
             head = newNode;
         } else {
@@ -78,7 +172,7 @@ public class LinkedList {
     //извлечение значения из конца списка без его удаления
     public Object pickTail(){
         // Если список пуст, выбрасываем исключение с соответствующим сообщением
-        if (isEmpty()) {
+        if (head == null) {
             throw new RuntimeException("List is empty");
         }
         // Если список не пуст (head не равен null), то идем до последнего узла и извлекаем его без удаления
@@ -93,7 +187,7 @@ public class LinkedList {
     //извлечение значения из конца списка с его удалением
     public Object pickDeleteTail(){
         // Если список пуст, выбрасываем исключение с соответствующим сообщением
-        if (isEmpty()) {
+        if (head == null) {
             throw new RuntimeException("List is empty");
         }
 
@@ -162,13 +256,13 @@ public class LinkedList {
     }
 
     //построение нового списка в обратном порядке
-    public LinkedList reverseList() {
+    public LinkedList<T> reverseList() {
         // Если список пуст, выбрасываем исключение с соответствующим сообщением
-        if (isEmpty()) {
+        if (head == null) {
             throw new RuntimeException("List is empty");
         }
         // Создаем новый экземпляр класса LinkedList для хранения обратного списка
-        LinkedList reversedList = new LinkedList();
+        LinkedList<T> reversedList = new LinkedList<>();
         Node current = head;
         // Проходим по исходному списку, начиная с головы и добавляем каждый элемент исходного списка в начало обратного списка
         while (current != null) {
