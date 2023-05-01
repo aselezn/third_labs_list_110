@@ -3,19 +3,48 @@ package doubleDirdList;
 
 public class Main {
     public static void main(String[] args) {
-        DoublyLinkedList list = new DoublyLinkedList();
-        DoublyLinkedList list1 = new DoublyLinkedList();
-        list.addToEnd("1");
-        list.addToEnd("2");
-        list.addToEnd("3");
-        list.addToEnd("4");
-        list.addToEnd("5");
-        list.addToEnd("6");
-        list1.addFirst("a");
-        list1.addToEnd("b");
+        DoublyLinkedList<Integer> list = new DoublyLinkedList<>();
+        list.addFirst(5);
+        list.addFirst(4);
+        list.addFirst(3);
+        list.addFirst(2);
+        list.addFirst(1);
 
-        list.absorbListToEnd(list1);
-        list.printAll();
+        System.out.println("Прямой порядок:");
+        for (Integer value : list) {
+            System.out.print(value + " ");
+        }
+        System.out.println();
+
+        System.out.println("Обратный порядок:");
+        for (Integer value : list.reverseIterator()) {
+            System.out.print(value + " ");
+        }
+        System.out.println();
+
+        System.out.println("От головы до значения 3:");
+        for (Integer value : list.rangeFromHeadToValue(3)) {
+            System.out.print(value + " ");
+        }
+        System.out.println();
+
+        System.out.println("От значения 3 до хвоста:");
+        for (Integer value : list.rangeFromValueToTail(3)) {
+            System.out.print(value + " ");
+        }
+        System.out.println();
+
+        System.out.println("От хвоста до значения 3:");
+        for (Integer value : list.rangeFromTailToValue(3)) {
+            System.out.print(value + " ");
+        }
+        System.out.println();
+
+        System.out.println("От значения 3 до головы:");
+        for (Integer value : list.rangeFromValueToHead(3)) {
+            System.out.print(value + " ");
+        }
+        System.out.println();
+    }
 
     }
-}
